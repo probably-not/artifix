@@ -22,7 +22,13 @@ This is a template repository, with certain things that you will need to replace
 
 ### Preparing your AWS Account
 
-Artifix uses GitHub Actions to apply the Terraform plan found in the [`terraform/`](terraform/) directory to your AWS Account. This means that you will need to prepare your AWS Account to allow GitHub Actions to assume IAM Roles in the account. The workflows use the [`configure-aws-credentials` action](https://github.com/aws-actions/configure-aws-credentials) to configure credentials - so follow the instructions found there to create an OIDC provider for GitHub, and set up an IAM Role for your repository with the following minimum permissions:
+Artifix uses GitHub Actions to apply the Terraform plan found in the [`terraform/`](terraform/) directory to your AWS Account. This means that you will need to prepare your AWS Account to allow GitHub Actions to assume IAM Roles in the account. The workflows use the [`configure-aws-credentials` action](https://github.com/aws-actions/configure-aws-credentials) to configure credentials - so follow the instructions found there to create an OIDC provider for GitHub.
+
+In addition to the GitHub OIDC Provider, Artifix makes the assumption that you will be using an S3 Bucket for your Terraform backend. So, make sure to create this bucket in your account.
+
+When you've got this bucket set up, you'll need to create an IAM Role for your new repository that has the required access for the GitHub Actions to run. This includes the necessary access to the Terraform specific resources (creating the various resources necessary for the set up of the registry itself), and the necessary access for the repository to upload to the Registry itself.
+
+A minimal policy that includes the necessary permissions may look something like this:
 
 ```json
 {}
@@ -42,6 +48,9 @@ Once you've made sure that your AWS Account is prepared, and that you've finishe
 
 You will need to set the following GitHub Actions Secrets:
 - `AWS_IAM_ROLE_ARN`: The ARN of the IAM Role that the GitHub Actions will assume. See the above "Preparing your AWS Account" section for more.
+- `TERRAFORM_BACKEND_S3_REGION`: The region for the S3 Bucket where the terraform state will be stored.
+- `TERRAFORM_BACKEND_S3_BUCKET`: The name of the S3 Bucket where the terraform state will be stored. This should be a separate bucket from the actual Hex Registry bucket - we don't want to expose the Terraform state on CloudFront accidentally.
+- `TERRAFORM_BACKEND_S3_KEY`: The key in the above mentioned S3 Bucket where the terraform state will be placed.
 
 ## Contributing
 
