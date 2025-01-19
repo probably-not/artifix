@@ -26,7 +26,7 @@ Artifix uses GitHub Actions to apply the Terraform plan found in the [`terraform
 
 ### Replacing References to Me!
 
-I, @probably-not, own this repository. So, there's a few different references to me in various files - luckily, these can be easily replaced!
+I, [@probably-not](https://github.com/probably-not), own this repository. So, there's a few different references to me in various files - luckily, these can be easily replaced!
 
 First, the [`CODEOWNERS`](.github/CODEOWNERS) file. I'm the owner of this repository, so I'm the one marked in the CODEOWNERS. For yours - make sure you are marked as the CODEOWNER. You may also remove this file completely - it is up to you whether you want to keep it or not.
 
