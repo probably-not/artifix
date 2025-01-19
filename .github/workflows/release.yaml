@@ -17,6 +17,29 @@ jobs:
     steps:
       - name: Git clone the repository
         uses: actions/checkout@v4
+      - name: Install terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.10.4
+      - name: Terraform Init
+        id: init
+        shell: sh
+        run: |
+          terraform init \
+            -backend-config="region=${{ secrets.TERRAFORM_BACKEND_S3_REGION }}" \
+            -backend-config="bucket=${{ secrets.TERRAFORM_BACKEND_S3_BUCKET }}" \
+            -backend-config="key=${{ secrets.TERRAFORM_BACKEND_S3_KEY }}"
+        working-directory: terraform
+      - name: Terraform Format
+        id: fmt
+        shell: sh
+        run: terraform fmt -check
+        working-directory: terraform
+      - name: Terraform Validate
+        id: validate
+        shell: sh
+        run: terraform validate -no-color
+        working-directory: terraform
       - name: Set up Elixir
         uses: erlef/setup-beam@v1
         with:
