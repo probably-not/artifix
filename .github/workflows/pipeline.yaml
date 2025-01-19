@@ -1,0 +1,127 @@
+name: "CI/CD Pipeline"
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+
+concurrency:
+  group: pipeline-${{ github.event.repository.name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+env:
+  disable_action: ${{ secrets.DISABLE_ACTION }}
+
+jobs:
+  validate-terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git clone the repository
+        if: ${{ env.disable_action != 'YES' }}
+        uses: actions/checkout@v4
+      - name: Install terraform
+        if: ${{ env.disable_action != 'YES' }}
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.10.4
+      - name: Terraform Init
+        if: ${{ env.disable_action != 'YES' }}
+        id: init
+        shell: sh
+        run: |
+          terraform init \
+            -backend-config="region=${{ secrets.TERRAFORM_BACKEND_S3_REGION }}" \
+            -backend-config="bucket=${{ secrets.TERRAFORM_BACKEND_S3_BUCKET }}" \
+            -backend-config="key=${{ secrets.TERRAFORM_BACKEND_S3_KEY }}"
+        working-directory: terraform
+      - name: Terraform Format
+        if: ${{ env.disable_action != 'YES' }}
+        id: fmt
+        shell: sh
+        run: terraform fmt -check
+        working-directory: terraform
+      - name: Terraform Validate
+        if: ${{ env.disable_action != 'YES' }}
+        id: validate
+        shell: sh
+        run: terraform validate -no-color
+        working-directory: terraform
+      - name: Terraform Plan
+        if: ${{ env.disable_action != 'YES' && github.event_name == 'pull_request' }}
+        id: plan
+        shell: sh
+        working-directory: terraform
+        run: |
+          mkdir -p /tmp/outputs
+          terraform plan \
+            -no-color \
+            -out /tmp/outputs/out.binary
+        continue-on-error: true
+      - name: Terraform Plan Status
+        if: ${{ env.disable_action != 'YES' && steps.plan.outcome == 'failure' }}
+        shell: sh
+        run: exit 1
+      - name: Terraform Plan Output
+        if: ${{ env.disable_action != 'YES' && steps.plan.outcome == 'success' }}
+        id: planoutput
+        shell: sh
+        working-directory: terraform
+        run: |
+          echo "$(terraform show -no-color /tmp/outputs/out.binary)" >> out.txt
+          echo 'stdout<<EOF' >> $GITHUB_OUTPUT
+          echo "$(cat out.txt)" >> $GITHUB_OUTPUT
+          echo 'EOF' >> $GITHUB_OUTPUT
+      - name: Add Plan To Pull Request
+        if: ${{ env.disable_action != 'YES' && github.event_name == 'pull_request' }}
+        uses: actions/github-script@v6
+        env:
+          PLAN: "terraform\n${{ steps.planoutput.outputs.stdout }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            if (process.env.PLAN.includes("No changes. Your infrastructure matches the configuration.")) {
+              return
+            }
+            const output = `### Terraform Plan For ${process.env.ACCOUNT} ${process.env.PLANNED_INFRA}
+            #### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+
+            <details><summary>Show Plan</summary>
+
+            \`\`\`\n
+            ${process.env.PLAN}
+            \`\`\`
+
+            </details>
+
+            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
+  validate-packages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Elixir
+        if: ${{ env.disable_action != 'YES' }}
+        uses: erlef/setup-beam@v1
+        with:
+          version-file: .tool-versions
+          version-type: strict

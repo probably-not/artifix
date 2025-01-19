@@ -2,7 +2,10 @@ name: "Build And Release Registry"
 
 on:
   push:
-    branches: [main]
+    branches-ignore:
+      - "**"
+    tags:
+      - v*
 
 concurrency:
   group: build-and-release-registry-${{ github.event.repository.name }}-${{ github.ref }}
@@ -45,6 +48,16 @@ jobs:
         shell: sh
         run: terraform validate -no-color
         working-directory: terraform
+      - name: Terraform Apply
+        if: ${{ env.disable_action != 'YES' && github.ref == 'refs/heads/main' }}
+        id: apply
+        shell: sh
+        working-directory: terraform
+        run: |
+          terraform apply \
+            -no-color \
+            -auto-approve \
+            -input=false
       - name: Set up Elixir
         if: ${{ env.disable_action != 'YES' }}
         uses: erlef/setup-beam@v1
