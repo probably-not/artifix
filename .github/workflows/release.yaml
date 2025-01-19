@@ -8,10 +8,13 @@ concurrency:
   group: build-and-release-registry-${{ github.event.repository.name }}-${{ github.ref }}
   cancel-in-progress: false
 
+env:
+  DISABLE_ACTION: ${{ secrets.DISABLE_ACTION }}
+
 jobs:
   release:
     runs-on: ubuntu-latest
-    if: ${{ secrets.DISABLE_ACTION != 'YES' }}
+    if: env.DISABLE_ACTION != 'YES'
     steps:
       - name: Git clone the repository
         uses: actions/checkout@v4
