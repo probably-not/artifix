@@ -12,6 +12,10 @@ The idea behind Artifix is as follows:
 - A CloudFront Distribution will be placed above the S3 bucket to allow for global caching of the packages.
 - If an auth key (or a list of auth keys) is given, a CloudFront Function will be added to the CloudFront Distribution, along with a CloudFront KeyValueStore, which can be used to authenticate and protect the Hex Registry.
 
+## What Does The Name `Artifix` Mean?
+
+I don't know. I was thinking about "artifacts", and Elixir, and Hex, and Phoenix, and how they all have the letter "x" in them... so I thought about how to combine the word "artifacts" with the letter "x" - and "Artifix" came out!
+
 ## Working with Artifix
 
 This is a template repository, with certain things that you will need to replace and update as you create a new repository from it. You can start by creating a repository from the template.
