@@ -1,0 +1,19 @@
+version: 2
+
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+    reviewers:
+      - "@probably-not"
+    open-pull-requests-limit: 5
+  - package-ecosystem: "terraform"
+    directory: "/terraform"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+    reviewers:
+      - "@probably-not"
+    open-pull-requests-limit: 5
