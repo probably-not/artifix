@@ -38,3 +38,13 @@ Once you've made sure that your AWS Account is prepared, and that you've finishe
 
 You will need to set the following GitHub Actions Secrets:
 - `AWS_IAM_ROLE_ARN`: The ARN of the IAM Role that the GitHub Actions will assume. See the above "Preparing your AWS Account" section for more.
+
+## Contributing
+
+Feel free to fork and make PRs!
+
+1. [Fork it!](http://github.com/probably-not/artifix/fork)
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create new [Pull Request](https://github.com/probably-not/artifix/compare)
