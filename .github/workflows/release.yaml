@@ -14,6 +14,7 @@ concurrency:
 jobs:
   release:
     runs-on: ubuntu-latest
+    if: ${{ secrets.DISABLE_ACTION != 'YES' }}
     steps:
       - name: Git clone the repository
         uses: actions/checkout@v4
