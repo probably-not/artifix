@@ -1,14 +1,11 @@
-name: "Release To Hex"
+name: "Build And Release Registry"
 
 on:
   push:
-    branches-ignore:
-      - "**"
-    tags:
-      - v*
+    branches: [main]
 
 concurrency:
-  group: release-${{ github.event.repository.name }}-${{ github.ref }}
+  group: build-and-release-registry-${{ github.event.repository.name }}-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
