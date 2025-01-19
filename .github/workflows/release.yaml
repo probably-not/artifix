@@ -8,20 +8,23 @@ concurrency:
   group: build-and-release-registry-${{ github.event.repository.name }}-${{ github.ref }}
   cancel-in-progress: false
 
+env:
+  disable_action: ${{ secrets.DISABLE_ACTION }}
+
 jobs:
   release:
     runs-on: ubuntu-latest
-    env:
-      disable_action: ${{ secrets.DISABLE_ACTION }}
-    if: ${{ env.disable_action != 'YES' }}
     steps:
       - name: Git clone the repository
+        if: ${{ env.disable_action != 'YES' }}
         uses: actions/checkout@v4
       - name: Install terraform
+        if: ${{ env.disable_action != 'YES' }}
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.10.4
       - name: Terraform Init
+        if: ${{ env.disable_action != 'YES' }}
         id: init
         shell: sh
         run: |
@@ -31,16 +34,19 @@ jobs:
             -backend-config="key=${{ secrets.TERRAFORM_BACKEND_S3_KEY }}"
         working-directory: terraform
       - name: Terraform Format
+        if: ${{ env.disable_action != 'YES' }}
         id: fmt
         shell: sh
         run: terraform fmt -check
         working-directory: terraform
       - name: Terraform Validate
+        if: ${{ env.disable_action != 'YES' }}
         id: validate
         shell: sh
         run: terraform validate -no-color
         working-directory: terraform
       - name: Set up Elixir
+        if: ${{ env.disable_action != 'YES' }}
         uses: erlef/setup-beam@v1
         with:
           version-file: .tool-versions
