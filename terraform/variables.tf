@@ -4,7 +4,12 @@ variable "aws_default_region" {
   default     = "us-east-1"
 }
 
-variable "domain_name" {
+variable "hosted_zone_name" {
+  description = "The name of the Hosted Zone in Route53 where the created Hex Registry will be routed. This value is required."
+  type        = string
+}
+
+variable "registry_domain_name" {
   description = "The domain name for the created Hex Registry. This value is required."
   type        = string
 }
