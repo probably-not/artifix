@@ -35,6 +35,11 @@ resource "aws_cloudfront_distribution" "registry" {
 
     # This is the Managed-CORS-with-preflight-and-SecurityHeadersPolicy policy
     response_headers_policy_id = "eaab4381-ed33-4a86-88ca-d9558dc6cd63"
+
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.validate_auth_key.arn
+    }
   }
 
   price_class = "PriceClass_200"
