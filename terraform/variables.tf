@@ -38,3 +38,9 @@ variable "registry_bucket_tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "enable_cloudfront_function_logging" {
+  description = "A flag to enable logging on the Auth Key Validation CloudFront Function. Defaults to false."
+  type        = bool
+  default     = false
+}
