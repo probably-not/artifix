@@ -69,9 +69,75 @@ jobs:
       max-parallel: 10
       matrix:
         package: ${{ fromJson(needs.discover-packages.outputs.package_dirs) }}
+        beam-versions:
+          - { otp: "27.2", elixir: "1.18.1" }
+          - { otp: "26.2", elixir: "1.18.1" }
+          - { otp: "27.2", elixir: "1.17.3" }
+          - { otp: "26.2", elixir: "1.17.3" }
+          - { otp: "26.2", elixir: "1.16.3" }
     steps:
       - name: Git clone the repository
         uses: actions/checkout@v4
-      - name: LS Working Directory
+      - name: Set up Elixir
+        uses: erlef/setup-beam@v1
+        id: beam
+        with:
+          otp-version: ${{ matrix.beam-versions.otp }}
+          elixir-version: ${{ matrix.beam-versions.elixir }}
+      - name: Cache deps
+        id: cache-deps
+        uses: actions/cache@v4
+        env:
+          cache-name: deps-otp-${{ matrix.beam-versions.otp }}-elixir-${{ matrix.beam-versions.elixir }}
+        with:
+          path: packages/${{ matrix.package }}/deps
+          key: ${{ runner.os }}-mix-${{ env.cache-name }}-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-mix-${{ env.cache-name }}-
+      # Step: Define how to cache the `_build` directory. After the first run,
+      # this speeds up tests runs a lot. This includes not re-compiling our
+      # project's downloaded deps every run.
+      - name: Cache compiled build
+        id: cache-build
+        uses: actions/cache@v4
+        env:
+          cache-name: build-otp-${{ matrix.beam-versions.otp }}-elixir-${{ matrix.beam-versions.elixir }}
+        with:
+          path: packages/${{ matrix.package }}/_build
+          key: ${{ runner.os }}-mix-${{ env.cache-name }}-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-mix-${{ env.cache-name }}-
+            ${{ runner.os }}-mix-
+      # Step: Conditionally bust the cache when job is re-run.
+      # Sometimes, we may have issues with incremental builds that are fixed by
+      # doing a full recompile. In order to not waste dev time on such trivial
+      # issues (while also reaping the time savings of incremental builds for
+      # *most* day-to-day development), force a full recompile only on builds
+      # that are retried.
+      - name: Clean to rule out incremental build as a source of flakiness
+        if: github.run_attempt != '1'
         working-directory: packages/${{ matrix.package }}
-        run: ls
+        shell: sh
+        run: |
+          mix deps.clean --all
+          mix clean
+      - name: Install dependencies
+        working-directory: packages/${{ matrix.package }}
+        run: mix deps.get
+      - name: Check for unused deps
+        working-directory: packages/${{ matrix.package }}
+        run: mix deps.unlock --check-unused
+      - name: Check Formatting
+        working-directory: packages/${{ matrix.package }}
+        run: mix format --check-formatted
+      - name: Compiles without warnings
+        working-directory: packages/${{ matrix.package }}
+        run: mix compile --warnings-as-errors
+      # Step: Start EPMD as a local daemon.
+      # When we test stuff that requires adding peers or local distribution,
+      # there is sometimes a need for adding EPMD and ensuring that it is running.
+      - name: Start EPMD for tests
+        run: epmd -daemon
+      - name: Run tests
+        working-directory: packages/${{ matrix.package }}
+        run: mix test

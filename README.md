@@ -5,7 +5,7 @@ A mono-repo style repository with CI/CD via GitHub Actions and Terraform which a
 The idea behind Artifix is as follows:
 - All of the packages that your organization uses as dependencies should be placed inside the [`packages/`](packages/) directory. 
 - The packages directory should contain inside of it only Mix projects, specifically, Mix projects which are "ready-to-package".
-- Each package will first have its tests run with `mix test`. Should the tests for one package fail, the whole pipeline will fail.
+- Each package will first go through a [CI Pipeline](.github/workflows/packages_ci.yaml), where it will be checked for formatting (`mix format --check-formatted`), unused dependencies (`mix deps.unlock --check-unused`), compiling without warnings or errors (`mix compile --warnings-as-errors`), and its tests will be run (`mix test`). Should any of these quality checks for one package fail, the whole pipeline will fail.
 - Each package will be built with `mix hex.build` to build a tarball of the package.
 - Everything is driven by the CI/CD pipeline, which will build the child packages and build the Hex Registry structure.
 - The Hex Registry will be uploaded to S3.
