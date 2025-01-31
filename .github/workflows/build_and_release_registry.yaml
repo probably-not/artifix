@@ -146,9 +146,13 @@ jobs:
           version-type: strict
       - name: Create public directory
         run: mkdir -p public
+      - name: Create private key file
+        run: |
+          echo "${{ secrets.HEX_REGISTRY_PRIVATE_KEY }}" > private_key.pem
+          chmod 600 private_key.pem
       - name: Build Initial Registry
-        # TODO: I need the private key and the registry name somehow.
-        run: mix hex.registry build public --name=acme --private-key=private_key.pem
+        # TODO: I need the registry name somehow.
+        run: mix hex.registry build public --name=artifix --private-key=private_key.pem
       - name: Download all built tarball artifacts
         uses: actions/download-artifact@v4
         with:
@@ -156,8 +160,8 @@ jobs:
           pattern: build-${{ github.ref }}-*
           merge-multiple: true
       - name: Build Registry With Packages
-        # TODO: I need the private key and the registry name somehow.
-        run: mix hex.registry build public --name=acme --private-key=private_key.pem
+        # TODO: I need the registry name somehow.
+        run: mix hex.registry build public --name=artifix --private-key=private_key.pem
   upload-registry:
     # TODO: Sync to AWS Bucket
     needs: [apply-terraform, build-registry]

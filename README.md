@@ -50,6 +50,7 @@ Next, the [`dependabot.yml`](.github/dependabot.yml) file. I typically use Depen
 Once you've made sure that your AWS Account is prepared, and that you've finished replacing references to me from within the repository, you can now configure the repository with the final details before letting the CI/CD take over.
 
 You will need to set the following GitHub Actions Secrets:
+- `HEX_REGISTRY_PRIVATE_KEY`: This needs to be the private key of your Hex Registry. The public key can be distributed to whomever is using your registry, but this private key must be kept secret.
 - `AWS_IAM_ROLE_ARN`: The ARN of the IAM Role that the GitHub Actions will assume. See the above "Preparing your AWS Account" section for more.
 - `TERRAFORM_BACKEND_S3_REGION`: The region for the S3 Bucket where the terraform state will be stored.
 - `TERRAFORM_BACKEND_S3_BUCKET`: The name of the S3 Bucket where the terraform state will be stored. This should be a separate bucket from the actual Hex Registry bucket - we don't want to expose the Terraform state on CloudFront accidentally.
