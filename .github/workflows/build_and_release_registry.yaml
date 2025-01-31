@@ -132,7 +132,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-${{ github.ref }}-${{ matrix.package }}
-          path: packages/${{ matrix.package }}/${{ matrix.package }}-*.tar.gz
+          path: packages/${{ matrix.package }}/${{ matrix.package }}-*.tar
           if-no-files-found: error
   build-registry:
     needs: [build-registry-tarballs]
