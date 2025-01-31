@@ -37,15 +37,19 @@ jobs:
           PACKAGE_COUNT=$(find packages -mindepth 1 -maxdepth 1 -type d | wc -l)
 
           if [ "$PACKAGE_COUNT" -gt 0 ]; then
+            echo "Found packages"
             DIRS=$(find packages -mindepth 1 -maxdepth 1 -type d | sed 's/packages\///' | jq -R -s -c 'split("\n")[:-1]')
-            echo "has_packages=true" >> $GITHUB_OUTPUT
-            echo "dirs=$DIRS" >> $GITHUB_OUTPUT
+            HAS_PACKAGES='false'
           else
             echo "No packages found"
-            echo "has_packages=false" >> $GITHUB_OUTPUT
-            echo "dirs=[]" >> $GITHUB_OUTPUT
+            DIRS='[]'
+            HAS_PACKAGES='true'
           fi
-          echo "Found directories: $(cat <<< "$DIRS" || echo '[]')"
+
+          echo "has_packages=$HAS_PACKAGES" >> $GITHUB_OUTPUT
+          echo "dirs=$DIRS" >> $GITHUB_OUTPUT
+          echo "Has packages? $(echo $HAS_PACKAGES)"
+          echo "Found directories: $(echo $DIRS)"
   no-packages-found:
     needs: [discover-packages]
     if: needs.discover-packages.outputs.has_packages == 'false'
