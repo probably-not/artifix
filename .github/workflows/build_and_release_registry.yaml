@@ -26,6 +26,12 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.10.4
+      - name: Configure AWS Credentials
+        if: ${{ env.disable_action != 'YES' }}
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: us-east-1
+          role-to-assume: ${{ secrets.AWS_IAM_ROLE_ARN }}
       - name: Terraform Init
         if: ${{ env.disable_action != 'YES' }}
         id: init
