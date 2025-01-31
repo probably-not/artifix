@@ -62,7 +62,7 @@ jobs:
   validate-packages:
     needs: [discover-packages]
     runs-on: ubuntu-latest
-    if: needs.discover-packages.outputs.has_packages == 'false'
+    if: needs.discover-packages.outputs.has_packages == 'true'
     strategy:
       fail-fast: false
       max-parallel: 10
