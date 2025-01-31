@@ -1,0 +1,46 @@
+name: "Packages CI"
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+
+concurrency:
+  group: packages-ci-${{ github.event.repository.name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  discover-packages:
+    runs-on: ubuntu-latest
+    outputs:
+      package_dirs: ${{ steps.get-dirs.outputs.dirs }}
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+      # Get directories and remove the "packages/" prefix for cleaner job names
+      - name: Get all package directories
+        id: get-dirs
+        run: |
+          DIRS=$(ls -d packages/*/ | sed 's/packages\///' | sed 's/\///' | jq -R -s -c 'split("\n")[:-1]')
+          echo "dirs=$DIRS" >> $GITHUB_OUTPUT
+  validate-packages:
+    needs: [discover-packages]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        package: ${{ fromJson(needs.discover-packages.outputs.package_dirs) }}
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+      - name: LS Working Directory
+        working-directory: packages/${{ matrix.package }}
+        run: ls
