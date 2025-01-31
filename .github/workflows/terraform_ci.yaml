@@ -1,4 +1,4 @@
-name: "CI/CD Pipeline"
+name: "Terraform CI"
 
 on:
   push:
@@ -116,12 +116,3 @@ jobs:
               repo: context.repo.repo,
               body: output
             })
-  validate-packages:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set up Elixir
-        if: ${{ env.disable_action != 'YES' }}
-        uses: erlef/setup-beam@v1
-        with:
-          version-file: .tool-versions
-          version-type: strict
