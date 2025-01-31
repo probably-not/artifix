@@ -35,16 +35,26 @@ jobs:
 
           if [ -n "$(ls -A packages/)" ]; then
             DIRS=$(find packages/* -maxdepth 0 -type d | sed 's/packages\///' | jq -R -s -c 'split("\n")[:-1]')
+            echo "has_packages=true" >> $GITHUB_OUTPUT
           else
             echo "No packages found"
-            DIRS='[]'
+            echo "has_packages=false" >> $GITHUB_OUTPUT
           fi
-
           echo "dirs=$DIRS" >> $GITHUB_OUTPUT
           echo "Found directories: $DIRS"
+  no-packages-found:
+    needs: [discover-packages]
+    if: needs.discover-packages.outputs.has_packages == 'false'
+    runs-on: ubuntu-latest
+    steps:
+      - name: No packages found
+        run: |
+          echo "No packages found in the packages directory."
+          echo "Tests were skipped as there is nothing to test."
   validate-packages:
     needs: [discover-packages]
     runs-on: ubuntu-latest
+    if: needs.discover-packages.outputs.has_packages == 'false'
     strategy:
       fail-fast: false
       max-parallel: 10
