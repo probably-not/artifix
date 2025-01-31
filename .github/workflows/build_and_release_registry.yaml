@@ -162,7 +162,7 @@ jobs:
           pattern: build-${{ github.ref }}-*
           merge-multiple: true
       - name: Build Registry With Packages
-        # TODO: I need the private key and theregistry name somehow.
+        # TODO: I need the private key and the registry name somehow.
         run: mix hex.registry build public --name=acme --private-key=private_key.pem
   upload-registry:
     # TODO: Sync to AWS Bucket
