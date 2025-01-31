@@ -163,10 +163,22 @@ jobs:
       - name: Build Registry With Packages
         # TODO: I need the registry name somehow.
         run: mix hex.registry build public --name=artifix --private-key=private_key.pem
+      - name: Upload Tarball Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: registry-${{ github.sha }}
+          path: public
+          if-no-files-found: error
   upload-registry:
-    # TODO: Sync to AWS Bucket
     needs: [apply-terraform, build-registry]
     runs-on: ubuntu-latest
     steps:
-      - name: Success
-        run: success()
+      - name: Download Built Registry
+        uses: actions/download-artifact@v4
+        with:
+          path: public
+          name: registry-${{ github.sha }}
+      # TODO: Sync to AWS Bucket
+      - name: Sync to AWS Bucket
+        if: ${{ env.disable_action != 'YES' }}
+        run: exit 1
