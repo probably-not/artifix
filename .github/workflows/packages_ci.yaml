@@ -33,15 +33,18 @@ jobs:
             mkdir -p packages
           fi
 
-          if [ -n "$(ls -A packages/)" ]; then
-            DIRS=$(find packages/* -maxdepth 0 -type d | sed 's/packages\///' | jq -R -s -c 'split("\n")[:-1]')
+          PACKAGE_COUNT=$(find packages -mindepth 1 -maxdepth 1 -type d | wc -l)
+
+          if [ "$PACKAGE_COUNT" -gt 0 ]; then
+            DIRS=$(find packages -mindepth 1 -maxdepth 1 -type d | sed 's/packages\///' | jq -R -s -c 'split("\n")[:-1]')
             echo "has_packages=true" >> $GITHUB_OUTPUT
+            echo "dirs=$DIRS" >> $GITHUB_OUTPUT
           else
             echo "No packages found"
             echo "has_packages=false" >> $GITHUB_OUTPUT
+            echo "dirs=[]" >> $GITHUB_OUTPUT
           fi
-          echo "dirs=$DIRS" >> $GITHUB_OUTPUT
-          echo "Found directories: $DIRS"
+          echo "Found directories: $(cat <<< "$DIRS" || echo '[]')"
   no-packages-found:
     needs: [discover-packages]
     if: needs.discover-packages.outputs.has_packages == 'false'
