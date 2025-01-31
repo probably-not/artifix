@@ -131,7 +131,7 @@ jobs:
       - name: Upload Tarball Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: build-${{ github.ref }}-${{ matrix.package }}
+          name: build-${{ github.sha }}-${{ matrix.package }}
           path: packages/${{ matrix.package }}/${{ matrix.package }}-*.tar
           if-no-files-found: error
   build-registry:
@@ -158,7 +158,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: public/tarballs
-          pattern: build-${{ github.ref }}-*
+          name: build-${{ github.sha }}-*
           merge-multiple: true
       - name: Build Registry With Packages
         # TODO: I need the registry name somehow.
