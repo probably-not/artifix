@@ -39,11 +39,11 @@ jobs:
           if [ "$PACKAGE_COUNT" -gt 0 ]; then
             echo "Found packages"
             DIRS=$(find packages -mindepth 1 -maxdepth 1 -type d | sed 's/packages\///' | jq -R -s -c 'split("\n")[:-1]')
-            HAS_PACKAGES='false'
+            HAS_PACKAGES='true'
           else
             echo "No packages found"
             DIRS='[]'
-            HAS_PACKAGES='true'
+            HAS_PACKAGES='false'
           fi
 
           echo "has_packages=$HAS_PACKAGES" >> $GITHUB_OUTPUT
