@@ -27,6 +27,7 @@ jobs:
       # Get directories and remove the "packages/" prefix for cleaner job names
       - name: Get all package directories
         id: get-dirs
+        shell: bash
         run: |
           if [ ! -d "packages" ]; then
             echo "packages directory not found, creating it"
