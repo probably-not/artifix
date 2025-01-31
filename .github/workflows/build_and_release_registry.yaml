@@ -178,6 +178,8 @@ jobs:
         with:
           path: public
           name: registry-${{ github.sha }}
+      - name: LS Public Directory
+        run: ls -a public/
       # TODO: Sync to AWS Bucket
       - name: Sync to AWS Bucket
         if: ${{ env.disable_action != 'YES' }}
