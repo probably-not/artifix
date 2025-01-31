@@ -21,6 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       package_dirs: ${{ steps.get-dirs.outputs.dirs }}
+      has_packages: ${{ steps.get-dirs.outputs.has_packages }}
     steps:
       - name: Git clone the repository
         uses: actions/checkout@v4
