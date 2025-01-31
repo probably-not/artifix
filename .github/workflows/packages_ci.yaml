@@ -28,8 +28,20 @@ jobs:
       - name: Get all package directories
         id: get-dirs
         run: |
-          DIRS=$(ls -d packages/*/ | sed 's/packages\///' | sed 's/\///' | jq -R -s -c 'split("\n")[:-1]')
+          if [ ! -d "packages" ]; then
+            echo "packages directory not found, creating it"
+            mkdir -p packages
+          fi
+
+          if [ -n "$(ls -A packages/)" ]; then
+            DIRS=$(find packages/* -maxdepth 0 -type d | sed 's/packages\///' | jq -R -s -c 'split("\n")[:-1]')
+          else
+            echo "No packages found"
+            DIRS='[]'
+          fi
+
           echo "dirs=$DIRS" >> $GITHUB_OUTPUT
+          echo "Found directories: $DIRS"
   validate-packages:
     needs: [discover-packages]
     runs-on: ubuntu-latest
