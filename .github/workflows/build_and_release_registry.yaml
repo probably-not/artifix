@@ -158,7 +158,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: public/tarballs
-          name: build-${{ github.sha }}-*
+          pattern: build-${{ github.sha }}-*
           merge-multiple: true
       - name: Build Registry With Packages
         # TODO: I need the registry name somehow.
