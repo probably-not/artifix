@@ -183,7 +183,21 @@ jobs:
         with:
           path: public
           name: registry-${{ github.sha }}
-      # TODO: Sync to AWS Bucket
+      - name: Configure AWS Credentials
+        if: ${{ env.disable_action != 'YES' }}
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: us-east-1
+          role-to-assume: ${{ secrets.AWS_IAM_ROLE_ARN }}
+      - name: Terraform Init
+        if: ${{ env.disable_action != 'YES' }}
+        id: init
+        shell: sh
+        run: |
+          terraform init \
+            -backend-config="region=${{ secrets.TERRAFORM_BACKEND_S3_REGION }}" \
+            -backend-config="bucket=${{ secrets.TERRAFORM_BACKEND_S3_BUCKET }}" \
+            -backend-config="key=${{ secrets.TERRAFORM_BACKEND_S3_KEY }}"
       - name: Sync to AWS Bucket
         if: ${{ env.disable_action != 'YES' }}
-        run: exit 1
+        run: aws s3 sync public s3://$(terraform output -raw s3_registry_bucket_name)
