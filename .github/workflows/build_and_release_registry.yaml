@@ -15,7 +15,7 @@ env:
   disable_action: ${{ secrets.DISABLE_ACTION }}
 
 jobs:
-  release:
+  apply-terraform:
     runs-on: ubuntu-latest
     steps:
       - name: Git clone the repository
@@ -64,3 +64,110 @@ jobs:
         with:
           version-file: .tool-versions
           version-type: strict
+  discover-packages:
+    runs-on: ubuntu-latest
+    outputs:
+      package_dirs: ${{ steps.get-dirs.outputs.dirs }}
+      has_packages: ${{ steps.get-dirs.outputs.has_packages }}
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+      # Get directories and remove the "packages/" prefix for cleaner job names
+      - name: Get all package directories
+        id: get-dirs
+        shell: bash
+        run: |
+          if [ ! -d "packages" ]; then
+            echo "packages directory not found, creating it"
+            mkdir -p packages
+          fi
+
+          PACKAGE_COUNT=$(find packages -mindepth 1 -maxdepth 1 -type d | wc -l)
+
+          if [ "$PACKAGE_COUNT" -gt 0 ]; then
+            echo "Found packages"
+            DIRS=$(find packages -mindepth 1 -maxdepth 1 -type d | sed 's/packages\///' | jq -R -s -c 'split("\n")[:-1]')
+            HAS_PACKAGES='true'
+          else
+            echo "No packages found"
+            DIRS='[]'
+            HAS_PACKAGES='false'
+          fi
+
+          echo "has_packages=$HAS_PACKAGES" >> $GITHUB_OUTPUT
+          echo "dirs=$DIRS" >> $GITHUB_OUTPUT
+          echo "Has packages? $(echo $HAS_PACKAGES)"
+          echo "Found directories: $(echo $DIRS)"
+  no-packages-found:
+    needs: [discover-packages]
+    if: needs.discover-packages.outputs.has_packages == 'false'
+    runs-on: ubuntu-latest
+    steps:
+      - name: No packages found
+        run: |
+          echo "No packages found in the packages directory."
+          echo "Tests were skipped as there is nothing to test."
+  build-registry-tarballs:
+    needs: [discover-packages]
+    runs-on: ubuntu-latest
+    if: needs.discover-packages.outputs.has_packages == 'true'
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        package: ${{ fromJson(needs.discover-packages.outputs.package_dirs) }}
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+      - name: Set up Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          version-file: .tool-versions
+          version-type: strict
+      - name: Build Package for Hex
+        working-directory: packages/${{ matrix.package }}
+        run: mix hex.build
+      - name: Upload Tarball Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ github.ref }}-${{ matrix.package }}
+          path: packages/${{ matrix.package }}/${{ matrix.package }}-*.tar.gz
+          if-no-files-found: error
+  build-registry:
+    needs: [build-registry-tarballs]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+      - name: Set up Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          version-file: .tool-versions
+          version-type: strict
+      - name: Create public directory
+        run: mkdir -p public
+      - name: Build Initial Registry
+        # TODO: I need the private key and the registry name somehow.
+        run: mix hex.registry build public --name=acme --private-key=private_key.pem
+      - name: Upload Tarball Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.package }}-${{ github.ref }}
+          path: packages/${{ matrix.package }}/${{ matrix.package }}-*.tar.gz
+          if-no-files-found: error
+      - name: Download all built tarball artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: public/tarballs
+          pattern: build-${{ github.ref }}-*
+          merge-multiple: true
+      - name: Build Registry With Packages
+        # TODO: I need the private key and theregistry name somehow.
+        run: mix hex.registry build public --name=acme --private-key=private_key.pem
+  upload-registry:
+    # TODO: Sync to AWS Bucket
+    needs: [apply-terraform, build-registry]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Success
+        run: success()

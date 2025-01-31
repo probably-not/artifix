@@ -7,6 +7,7 @@ The idea behind Artifix is as follows:
 - The packages directory should contain inside of it only Mix projects, specifically, Mix projects which are "ready-to-package".
 - Each package will first go through a [CI Pipeline](.github/workflows/packages_ci.yaml), where it will be checked for formatting (`mix format --check-formatted`), unused dependencies (`mix deps.unlock --check-unused`), compiling without warnings or errors (`mix compile --warnings-as-errors`), and its tests will be run (`mix test`). Should any of these quality checks for one package fail, the whole pipeline will fail.
 - Each package will be built with `mix hex.build` to build a tarball of the package.
+- The [`.tool-versions`](.tool-versions) file in the root of the repository is used to determine what Elixir version packages the tarball - this is unrelated to the matrix of OTP/Elixir versions that the packages are tested with.
 - Everything is driven by the CI/CD pipeline, which will build the child packages and build the Hex Registry structure.
 - The Hex Registry will be uploaded to S3.
 - A CloudFront Distribution will be placed above the S3 bucket to allow for global caching of the packages.
