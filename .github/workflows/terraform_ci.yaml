@@ -13,7 +13,7 @@ on:
       - ready_for_review
 
 concurrency:
-  group: pipeline-${{ github.event.repository.name }}-${{ github.ref }}
+  group: terraform-ci-${{ github.event.repository.name }}-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
