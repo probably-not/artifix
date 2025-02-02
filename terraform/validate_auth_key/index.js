@@ -6,11 +6,17 @@ const response401 = {
 };
 
 const loggingEnabled = ${logging_enabled};
+const authEnabled = ${has_auth_keys};
 const kvsId = ${keyvaluestore_id};
 
 async function handler(event) {
   const request = event.request;
   const headers = request.headers;
+
+  if (!authEnabled) {
+    log("Auth is not enabled")
+    return request
+  }
 
   const authKey = headers["authorization"]
     ? headers["authorization"].value

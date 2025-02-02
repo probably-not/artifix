@@ -14,8 +14,8 @@ variable "registry_domain_name" {
   type        = string
 }
 
-variable "auth_keys_csv" {
-  description = "Auth Keys that can be used for authentication with the registry, in a CSV format (so that they may be passed via environment variables). These will be set within a CloudFront KeyValueStore, which will be accessed by the authentication function on requests. This defaults to empty, meaning that there is no authentication check for the registry."
+variable "auth_keys_str" {
+  description = "Auth Keys that can be used for authentication with the registry. These should be given in a single string, in a comma-separated format (so that they may be passed via environment variables). These will be set within a CloudFront KeyValueStore, which will be accessed by the authentication function on requests. This defaults to empty, meaning that there is no authentication check for the registry."
   type        = string
   sensitive   = true
   default     = ""
