@@ -53,6 +53,7 @@ A minimal policy that includes the necessary permissions may look something like
                 "route53:GetHostedZone",
                 "route53:ChangeResourceRecordSets",
                 "route53:GetChange",
+                "route53:ListHostedZones",
                 "route53:ListResourceRecordSets"
             ],
             "Resource": "*"
