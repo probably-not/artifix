@@ -23,6 +23,10 @@ I don't know. I was thinking about "artifacts", and Elixir, and Hex, and Phoenix
 
 This is a template repository, with certain things that you will need to replace and update as you create a new repository from it. You can start by creating a repository from the template.
 
+### After the below setup
+
+Just to preface the whole setup - once everything is prepared, running, and configured, you simply need to set your new registry via the `mix hex.repo add` command - set the registry name to what you have chosen, set the URL to your registry URL, and set the public key to the public key of the private key that you have generated, and if you are using auth keys, then set your auth key appropriately. That's really all there is to it! It might feel like a lot looking at this README and these instructions, but I promise, it's a very simple process and I tried to make it as comprehensive as possible!
+
 ### Preparing your AWS Account
 
 Artifix uses GitHub Actions to apply the Terraform plan found in the [`terraform/`](terraform/) directory to your AWS Account. This means that you will need to prepare your AWS Account to allow GitHub Actions to assume IAM Roles in the account. The workflows use the [`configure-aws-credentials` action](https://github.com/aws-actions/configure-aws-credentials) to configure credentials - so follow the instructions found there to create an OIDC provider for GitHub.
