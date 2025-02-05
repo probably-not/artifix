@@ -81,7 +81,13 @@ A minimal policy that includes the necessary permissions may look something like
                 "s3:GetBucketCORS",
                 "s3:GetBucketWebsite",
                 "s3:GetAccelerateConfiguration",
-                "s3:GetBucketRequestPayment"
+                "s3:GetBucketRequestPayment",
+                "s3:GetBucketLogging",
+                "s3:GetBucketMetadataTableConfiguration",
+                "s3:GetBucketNotification",
+                "s3:GetBucketObjectLockConfiguration",
+                "s3:GetBucketPolicyStatus",
+                "s3:GetBucketTagging"
             ],
             "Resource": "*"
         },
