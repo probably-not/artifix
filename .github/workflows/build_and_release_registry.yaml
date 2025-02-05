@@ -182,6 +182,8 @@ jobs:
     needs: [apply-terraform, build-registry]
     runs-on: ubuntu-latest
     steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v4
       - name: Install terraform
         if: ${{ env.disable_action != 'YES' }}
         uses: hashicorp/setup-terraform@v3
