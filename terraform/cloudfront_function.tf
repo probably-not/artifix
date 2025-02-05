@@ -4,7 +4,7 @@ resource "aws_cloudfront_key_value_store" "auth_keys" {
 }
 
 locals {
-  auth_keys_list = split(",", var.auth_keys_str)
+  auth_keys_list = compact(split(",", var.auth_keys_str))
   auth_keys_map = {
     for key in local.auth_keys_list : sha256(key) => key
   }
