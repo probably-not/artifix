@@ -87,7 +87,8 @@ A minimal policy that includes the necessary permissions may look something like
                 "s3:GetBucketNotification",
                 "s3:GetBucketObjectLockConfiguration",
                 "s3:GetBucketPolicyStatus",
-                "s3:GetBucketTagging"
+                "s3:GetBucketTagging",
+                "s3:GetLifecycleConfiguration"
             ],
             "Resource": "*"
         },
