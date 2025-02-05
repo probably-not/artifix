@@ -18,6 +18,7 @@ permissions:
 env:
   disable_action: ${{ secrets.DISABLE_ACTION }}
   registry_name: ${{ secrets.HEX_REGISTRY_NAME || 'artifix' }}
+  auth_keys_str: ${{ secrets.HEX_REGISTRY_AUTH_KEYS || '' }}
 
 jobs:
   apply-terraform:
@@ -67,6 +68,7 @@ jobs:
         run: |
           terraform apply \
             -var-file=../vars.tfvars \
+            -var=${{ env.auth_keys_str }} \
             -no-color \
             -auto-approve \
             -input=false
@@ -187,6 +189,7 @@ jobs:
         run: |
           terraform refresh \
             -var-file=../vars.tfvars \
+            -var=${{ env.auth_keys_str }} \
             -input=false
       - name: Sync from AWS Bucket
         working-directory: terraform
@@ -252,6 +255,7 @@ jobs:
         run: |
           terraform refresh \
             -var-file=../vars.tfvars \
+            -var=${{ env.auth_keys_str }} \
             -input=false
       - name: Sync to AWS Bucket
         working-directory: terraform
