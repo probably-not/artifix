@@ -26,7 +26,7 @@ resource "aws_cloudfront_function" "validate_auth_key" {
     {
       logging_enabled  = var.enable_cloudfront_function_logging,
       keyvaluestore_id = aws_cloudfront_key_value_store.auth_keys.id,
-      has_auth_keys    = length(local.auth_keys)
+      has_auth_keys    = length(local.auth_keys_map)
     }
   )
 
