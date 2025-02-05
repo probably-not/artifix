@@ -2,8 +2,10 @@ name: "Build And Release Registry"
 
 on:
   push:
-    branches-ignore:
-      - "**"
+    branches:
+      - "main"
+    # branches-ignore:
+    #   - "**"
     tags:
       - v*
 
