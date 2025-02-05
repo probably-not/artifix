@@ -88,7 +88,15 @@ A minimal policy that includes the necessary permissions may look something like
                 "s3:GetBucketObjectLockConfiguration",
                 "s3:GetBucketPolicyStatus",
                 "s3:GetBucketTagging",
-                "s3:GetLifecycleConfiguration"
+                "s3:GetLifecycleConfiguration",
+                "s3:GetAnalyticsConfiguration",
+                "s3:GetAccessPointConfigurationForObjectLambda",
+                "s3:GetIntelligentTieringConfiguration",
+                "s3:GetInventoryConfiguration",
+                "s3:GetMetricsConfiguration",
+                "s3:GetReplicationConfiguration",
+                "s3:GetStorageLensConfiguration",
+                "s3:GetStorageLensConfigurationTagging"
             ],
             "Resource": "*"
         },
