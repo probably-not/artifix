@@ -43,7 +43,8 @@ A minimal policy that includes the necessary permissions may look something like
                 "acm:RequestCertificate",
                 "acm:DescribeCertificate",
                 "acm:DeleteCertificate",
-                "acm:AddTagsToCertificate"
+                "acm:AddTagsToCertificate",
+                "acm:ListTagsForCertificate"
             ],
             "Resource": "*"
         },
@@ -75,7 +76,8 @@ A minimal policy that includes the necessary permissions may look something like
                 "s3:PutBucketOwnershipControls",
                 "s3:GetBucketOwnershipControls",
                 "s3:PutEncryptionConfiguration",
-                "s3:GetEncryptionConfiguration"
+                "s3:GetEncryptionConfiguration",
+                "s3:ListBucket"
             ],
             "Resource": "*"
         },
@@ -86,6 +88,7 @@ A minimal policy that includes the necessary permissions may look something like
                 "cloudfront:GetDistribution",
                 "cloudfront:UpdateDistribution",
                 "cloudfront:DeleteDistribution",
+                "cloudfront:GetFunction",
                 "cloudfront:CreateFunction",
                 "cloudfront:UpdateFunction",
                 "cloudfront:DeleteFunction",
@@ -93,13 +96,18 @@ A minimal policy that includes the necessary permissions may look something like
                 "cloudfront:DescribeFunction",
                 "cloudfront:CreateKeyValueStore",
                 "cloudfront:DeleteKeyValueStore",
+                "cloudfront:ListKeyValueStores",
+                "cloudfront:UpdateKeyValueStore",
                 "cloudfront:DescribeKeyValueStore",
-                "cloudfront:CreateKeyValueStoreAssociation",
-                "cloudfront:DeleteKeyValueStoreAssociation",
+                "cloudfront-keyvaluestore:DescribeKeyValueStore",
+                "cloudfront-keyvaluestore:ListKeys",
+                "cloudfront-keyvaluestore:GetKey",
+                "cloudfront-keyvaluestore:UpdateKeys",
+                "cloudfront-keyvaluestore:PutKey",
+                "cloudfront-keyvaluestore:DeleteKey",
                 "cloudfront:CreateOriginAccessControl",
                 "cloudfront:GetOriginAccessControl",
                 "cloudfront:DeleteOriginAccessControl",
-                "cloudfront:PutKeyValueStoreConfig"
             ],
             "Resource": "*"
         }
