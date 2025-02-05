@@ -1,6 +1,5 @@
 resource "aws_s3_bucket" "registry" {
   bucket_prefix = var.registry_bucket_prefix
-  bucket        = var.registry_bucket_name
   tags          = var.registry_bucket_tags
 }
 
