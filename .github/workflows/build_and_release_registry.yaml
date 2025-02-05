@@ -11,6 +11,10 @@ concurrency:
   group: build-and-release-registry-${{ github.event.repository.name }}-${{ github.ref }}
   cancel-in-progress: false
 
+permissions:
+  id-token: write
+  contents: read
+
 env:
   disable_action: ${{ secrets.DISABLE_ACTION }}
   registry_name: ${{ secrets.HEX_REGISTRY_NAME || 'artifix' }}
