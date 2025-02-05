@@ -200,6 +200,7 @@ jobs:
           role-to-assume: ${{ secrets.AWS_IAM_ROLE_ARN }}
       - name: Terraform Init
         if: ${{ env.disable_action != 'YES' }}
+        working-directory: terraform
         id: init
         shell: sh
         run: |
@@ -209,6 +210,7 @@ jobs:
             -backend-config="key=${{ secrets.TERRAFORM_BACKEND_S3_KEY }}"
       - name: Terraform Refresh
         if: ${{ env.disable_action != 'YES' }}
+        working-directory: terraform
         id: refresh
         shell: sh
         run: |
@@ -216,9 +218,11 @@ jobs:
             -var-file=../vars.tfvars \
             -input=false
       - name: Sync to AWS Bucket
+        working-directory: terraform
         if: ${{ env.disable_action != 'YES' }}
-        run: aws s3 sync public s3://$(terraform output -raw s3_registry_bucket_name)
+        run: aws s3 sync ../public s3://$(terraform output -raw s3_registry_bucket_name)
       - name: Invalidate Cache in CloudFront
+        working-directory: terraform
         if: ${{ env.disable_action != 'YES' }}
         run: |
           cdn_id=$(terraform output -raw cloudfront_distribution_id)
