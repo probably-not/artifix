@@ -130,7 +130,10 @@ A minimal policy that includes the necessary permissions may look something like
                 "cloudfront:GetOriginAccessControl",
                 "cloudfront:DeleteOriginAccessControl",
                 "cloudfront:TagResource",
-                "cloudfront:ListTagsForResource"
+                "cloudfront:ListTagsForResource",
+                "cloudfront:GetInvalidation",
+                "cloudfront:CreateInvalidation",
+                "cloudfront:ListInvalidations"
             ],
             "Resource": "*"
         }
