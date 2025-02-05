@@ -40,13 +40,13 @@ async function getAuthKeyExists(authKey) {
     const kvsHandle = cf.kvs();
     return await kvsHandle.exists(authKey);
   } catch (err) {
-    log(`Error reading value for key: ${authKey}, error: ${err}`);
+    log(`Error reading value for key`, { authKey, err });
     return null;
   }
 }
 
-function log(message) {
+function log(message, attrs = {}) {
   if (loggingEnabled) {
-    console.log(message);
+    console.log(message, attrs);
   }
 }
