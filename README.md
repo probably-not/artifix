@@ -134,6 +134,8 @@ A minimal policy that includes the necessary permissions may look something like
 }
 ```
 
+This policy may seem scary because it has a bunch of lines! But don't worry, this is just all of the fine-grained configurations that we need for each individual call that Terraform makes while it is ensuring the configuration of the AWS Account you are deploying to matches the configuration described in the Terraform modules here.
+
 ### Replacing References to Me!
 
 I, [@probably-not](https://github.com/probably-not), own this repository. So, there's a few different references to me in various files - luckily, these can be easily replaced!
