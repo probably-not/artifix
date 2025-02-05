@@ -13,6 +13,7 @@ concurrency:
 
 env:
   disable_action: ${{ secrets.DISABLE_ACTION }}
+  registry_name: ${{ secrets.HEX_REGISTRY_NAME || "artifix" }}
 
 jobs:
   apply-terraform:
@@ -157,8 +158,7 @@ jobs:
           echo "${{ secrets.HEX_REGISTRY_PRIVATE_KEY }}" > private_key.pem
           chmod 600 private_key.pem
       - name: Build Initial Registry
-        # TODO: I need the registry name somehow.
-        run: mix hex.registry build public --name=artifix --private-key=private_key.pem
+        run: mix hex.registry build public --name=${{ env.registry_name }} --private-key=private_key.pem
       - name: Download all built tarball artifacts
         uses: actions/download-artifact@v4
         with:
@@ -166,8 +166,7 @@ jobs:
           pattern: build-${{ github.sha }}-*
           merge-multiple: true
       - name: Build Registry With Packages
-        # TODO: I need the registry name somehow.
-        run: mix hex.registry build public --name=artifix --private-key=private_key.pem
+        run: mix hex.registry build public --name=${{ env.registry_name }} --private-key=private_key.pem
       - name: Upload Tarball Artifact
         uses: actions/upload-artifact@v4
         with:
