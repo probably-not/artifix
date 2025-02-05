@@ -63,6 +63,7 @@ A minimal policy that includes the necessary permissions may look something like
         {
             "Effect": "Allow",
             "Action": [
+                "s3:GetObject",
                 "s3:PutObject",
                 "s3:DeleteObject",
                 "s3:CreateBucket",
