@@ -183,6 +183,8 @@ In addition to the secrets that you need to configure above, you may also set th
 
 You don't have to set them via the secret! You can also add them to the [`vars.tfvars`](./vars.tfvars) file if you don't mind commiting your list of auth keys to the repository, or you can find some other way of injecting them into the action that creates and manages the terraform infrastructure. Like I've said a couple of times in the README, this is just a template and you can adjust it however you see fit.
 
+Just make sure to remove the `auth_keys_str: ${{ secrets.HEX_REGISTRY_AUTH_KEYS || '' }}` lines from the [`build_and_release_registry.yaml`](./.github/workflows/build_and_release_registry.yaml) and the [`terraform_ci.yaml`](./.github/workflows/terraform_ci.yaml) workflows - otherwise you'll accidentally override the value with an empty string!
+
 ## Contributing
 
 Feel free to fork and make PRs!
