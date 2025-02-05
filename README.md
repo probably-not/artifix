@@ -119,7 +119,11 @@ In addition to replacing references to me, feel free to delete the two examples 
 
 Once you've made sure that your AWS Account is prepared, and that you've finished replacing references to me from within the repository, you can now configure the repository with the final details before letting the CI/CD take over.
 
+#### Configuring the Infrastructure
+
 In the [`vars.tfvars`](./vars.tfvars) file, you'll find multiple variables that you can configure to your liking. Descriptions of these variables can be found in the [`terraform/variables.tf`](./terraform/variables.tf) file. There's not a lot! This template makes a few assumptions about your current infrastructure - for example, it's not going to create a Route53 Hosted Zone for you, it assumes that is already created - but there's really not too much to create, so the variables is a very small list.
+
+#### Configuring the GitHub Actions
 
 You will need to set the following GitHub Actions Secrets:
 - `HEX_REGISTRY_PRIVATE_KEY`: This needs to be the private key of your Hex Registry. The public key can be distributed to whomever is using your registry, but this private key must be kept secret.
@@ -127,6 +131,12 @@ You will need to set the following GitHub Actions Secrets:
 - `TERRAFORM_BACKEND_S3_REGION`: The region for the S3 Bucket where the terraform state will be stored.
 - `TERRAFORM_BACKEND_S3_BUCKET`: The name of the S3 Bucket where the terraform state will be stored. This should be a separate bucket from the actual Hex Registry bucket - we don't want to expose the Terraform state on CloudFront accidentally.
 - `TERRAFORM_BACKEND_S3_KEY`: The key in the above mentioned S3 Bucket where the terraform state will be placed.
+
+#### Optional Configurations
+
+You may want to set the following GitHub Actions Secrets:
+- `HEX_REGISTRY_NAME`: This needs to be set to the name of your registry. By default, it is set to "artifix", however, this could potentially clash with other registries with the same name... so you can set it to a new name based on whatever you'd like!
+
 
 ### Configuring the Auth Keys
 
