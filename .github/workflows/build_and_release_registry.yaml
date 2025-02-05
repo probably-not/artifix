@@ -62,6 +62,7 @@ jobs:
         working-directory: terraform
         run: |
           terraform apply \
+            -var-file=vars.tfvars \
             -no-color \
             -auto-approve \
             -input=false

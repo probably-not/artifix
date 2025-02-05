@@ -72,6 +72,7 @@ jobs:
         run: |
           mkdir -p /tmp/outputs
           terraform plan \
+            -var-file=vars.tfvars \
             -no-color \
             -out /tmp/outputs/out.binary
         continue-on-error: true
