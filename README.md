@@ -34,7 +34,75 @@ When you've got this bucket set up, you'll need to create an IAM Role for your n
 A minimal policy that includes the necessary permissions may look something like this:
 
 ```json
-{}
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "acm:RequestCertificate",
+                "acm:DescribeCertificate",
+                "acm:DeleteCertificate",
+                "acm:AddTagsToCertificate"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "route53:GetHostedZone",
+                "route53:ChangeResourceRecordSets",
+                "route53:GetChange",
+                "route53:ListResourceRecordSets"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:CreateBucket",
+                "s3:DeleteBucket",
+                "s3:GetBucketPolicy",
+                "s3:PutBucketPolicy",
+                "s3:GetBucketAcl",
+                "s3:PutBucketAcl",
+                "s3:PutBucketVersioning",
+                "s3:GetBucketVersioning",
+                "s3:PutBucketPublicAccessBlock",
+                "s3:GetBucketPublicAccessBlock",
+                "s3:PutBucketOwnershipControls",
+                "s3:GetBucketOwnershipControls",
+                "s3:PutEncryptionConfiguration",
+                "s3:GetEncryptionConfiguration"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "cloudfront:CreateDistribution",
+                "cloudfront:GetDistribution",
+                "cloudfront:UpdateDistribution",
+                "cloudfront:DeleteDistribution",
+                "cloudfront:CreateFunction",
+                "cloudfront:UpdateFunction",
+                "cloudfront:DeleteFunction",
+                "cloudfront:PublishFunction",
+                "cloudfront:DescribeFunction",
+                "cloudfront:CreateKeyValueStore",
+                "cloudfront:DeleteKeyValueStore",
+                "cloudfront:DescribeKeyValueStore",
+                "cloudfront:CreateKeyValueStoreAssociation",
+                "cloudfront:DeleteKeyValueStoreAssociation",
+                "cloudfront:CreateOriginAccessControl",
+                "cloudfront:GetOriginAccessControl",
+                "cloudfront:DeleteOriginAccessControl",
+                "cloudfront:PutKeyValueStoreConfig"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
 ```
 
 ### Replacing References to Me!
