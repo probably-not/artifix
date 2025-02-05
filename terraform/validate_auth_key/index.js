@@ -26,7 +26,7 @@ async function handler(event) {
     return response401;
   }
 
-  const authKeyValue = await getAuthKeyExists();
+  const authKeyValue = await getAuthKeyExists(authKey);
   if (!authKeyValue) {
     return response401;
   }
