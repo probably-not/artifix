@@ -15,7 +15,7 @@ concurrency:
 
 env:
   disable_action: ${{ secrets.DISABLE_ACTION }}
-  registry_name: ${{ secrets.HEX_REGISTRY_NAME || "artifix" }}
+  registry_name: ${{ secrets.HEX_REGISTRY_NAME || 'artifix' }}
 
 jobs:
   apply-terraform:
