@@ -200,3 +200,11 @@ jobs:
       - name: Sync to AWS Bucket
         if: ${{ env.disable_action != 'YES' }}
         run: aws s3 sync public s3://$(terraform output -raw s3_registry_bucket_name)
+      - name: Invalidate Cache in CloudFront
+        if: ${{ env.disable_action != 'YES' }}
+        run: |
+          cdn_id=$(terraform output -raw cloudfront_distribution_id)
+          echo "Invalidating The $cdn_id CDN"
+          invalidation_id=$(aws cloudfront create-invalidation --distribution-id $cdn_id --paths '/*' | jq -r '.Invalidation.Id')
+          echo "Waiting For The $invalidation_id Invalidation To Complete For The $cdn_id CDN"
+          aws cloudfront wait invalidation-completed --id $invalidation_id --distribution-id $cdn_id && echo "Invalidation $invalidation_id Completed For The $cdn_id CDN"
