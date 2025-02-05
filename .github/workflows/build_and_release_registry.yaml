@@ -60,7 +60,7 @@ jobs:
         run: terraform validate -no-color
         working-directory: terraform
       - name: Terraform Apply
-        if: ${{ env.disable_action != 'YES' && github.ref == 'refs/heads/main' }}
+        if: ${{ env.disable_action != 'YES' }}
         id: apply
         shell: sh
         working-directory: terraform
