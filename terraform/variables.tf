@@ -15,9 +15,12 @@ variable "registry_domain_name" {
 }
 
 variable "auth_keys_str" {
+  # This value, while being sensitive, is not directly marked as sensitive.
+  # Because we use it in a for_each value, terraform does not allow it to be marked as sensitive.
+  # This is regardless of whether or not value is actually used in the for_each - for example, we use hashes in the for_each
+  # to not directly reference the key value in the resource name.
   description = "Auth Keys that can be used for authentication with the registry. These should be given in a single string, in a comma-separated format (so that they may be passed via environment variables). These will be set within a CloudFront KeyValueStore, which will be accessed by the authentication function on requests. This defaults to empty, meaning that there is no authentication check for the registry."
   type        = string
-  sensitive   = true
   default     = ""
 }
 
