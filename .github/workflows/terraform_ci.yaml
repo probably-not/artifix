@@ -74,7 +74,7 @@ jobs:
           mkdir -p /tmp/outputs
           terraform plan \
             -var-file=../vars.tfvars \
-            -var=${{ env.auth_keys_str }} \
+            -var="auth_keys_str=${{ env.auth_keys_str }}" \
             -no-color \
             -out /tmp/outputs/out.binary
         continue-on-error: true

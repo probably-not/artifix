@@ -68,7 +68,7 @@ jobs:
         run: |
           terraform apply \
             -var-file=../vars.tfvars \
-            -var=${{ env.auth_keys_str }} \
+            -var="auth_keys_str=${{ env.auth_keys_str }}" \
             -no-color \
             -auto-approve \
             -input=false
@@ -189,7 +189,7 @@ jobs:
         run: |
           terraform refresh \
             -var-file=../vars.tfvars \
-            -var=${{ env.auth_keys_str }} \
+            -var="auth_keys_str=${{ env.auth_keys_str }}" \
             -input=false
       - name: Sync from AWS Bucket
         working-directory: terraform
@@ -255,7 +255,7 @@ jobs:
         run: |
           terraform refresh \
             -var-file=../vars.tfvars \
-            -var=${{ env.auth_keys_str }} \
+            -var="auth_keys_str=${{ env.auth_keys_str }}" \
             -input=false
       - name: Sync to AWS Bucket
         working-directory: terraform
