@@ -7,7 +7,7 @@ const response401 = {
 
 const loggingEnabled = ${logging_enabled};
 const authEnabled = ${has_auth_keys};
-const kvsId = ${keyvaluestore_id};
+const kvsId = "${keyvaluestore_id}";
 
 async function handler(event) {
   const request = event.request;
@@ -45,8 +45,9 @@ async function getAuthKeyExists(authKey) {
   }
 }
 
-function log(message, attrs = {}) {
+function log(message, attrs) {
+  attrs = attrs || {};
   if (loggingEnabled) {
-    console.log(message, attrs);
+      console.log(message, attrs);
   }
 }
