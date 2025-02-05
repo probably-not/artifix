@@ -79,7 +79,8 @@ A minimal policy that includes the necessary permissions may look something like
                 "s3:GetEncryptionConfiguration",
                 "s3:ListBucket",
                 "s3:GetBucketCORS",
-                "s3:GetBucketWebsite"
+                "s3:GetBucketWebsite",
+                "s3:GetAccelerateConfiguration"
             ],
             "Resource": "*"
         },
