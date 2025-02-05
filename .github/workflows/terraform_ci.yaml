@@ -100,7 +100,7 @@ jobs:
             if (process.env.PLAN.includes("No changes. Your infrastructure matches the configuration.")) {
               return
             }
-            const output = `### Terraform Plan For ${process.env.ACCOUNT} ${process.env.PLANNED_INFRA}
+            const output = `### Terraform Plan
             #### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
             #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
